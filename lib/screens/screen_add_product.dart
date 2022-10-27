@@ -1,11 +1,20 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
 
+import 'package:deal_easy_admin/controllers/product_controller.dart';
+import 'package:deal_easy_admin/services/storage_services.dart';
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 
+import 'package:image_picker/image_picker.dart';
+
 class AddProducts extends StatelessWidget {
-  const AddProducts({super.key});
+  AddProducts({super.key});
+
+  final ProductController productController = Get.find();
+
+  StorageService storage = StorageService();
 
   @override
   Widget build(BuildContext context) {
@@ -17,69 +26,133 @@ class AddProducts extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 100,
-                child: InkWell(
-                  onTap: () {
-                    Get.to(() => const AddProducts());
-                  },
-                  child: Card(
-                    elevation: 5,
-                    color: Colors.black,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(
-                          Icons.add_circle,
-                          color: Colors.white,
+          child: Obx(
+            (() => Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 100,
+                      child: InkWell(
+                        onTap: () async {
+                          ImagePicker picker = ImagePicker();
+                          final XFile? image = await picker.pickImage(
+                              source: ImageSource.gallery);
+
+                          if (image == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  "No Image was selected!",
+                                ),
+                              ),
+                            );
+                          }
+                          if (image != null) {
+                            await storage.uploadImage(image);
+                            var imageUrl =
+                                await storage.getDownloadURL(image.name);
+
+                            productController.newProduct.update(
+                                'imageUrl', (_) => imageUrl,
+                                ifAbsent: () => imageUrl);
+                            log(productController.newProduct['imageUrl']);
+                          }
+                        },
+                        child: Card(
+                          elevation: 5,
+                          color: Colors.black,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(
+                                Icons.add_circle,
+                                color: Colors.white,
+                              ),
+                              SizedBox(width: 5),
+                              Text(
+                                "Add an Image",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
                         ),
-                        SizedBox(width: 5),
-                        Text(
-                          "Add an Image",
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                "Product Information",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              _buildTextFormfield("Product Id"),
-              _buildTextFormfield("Product Name"),
-              _buildTextFormfield("Product Discription"),
-              _buildTextFormfield("Product Category"),
-              const SizedBox(
-                height: 10.0,
-              ),
-              _buildSlider('Price'),
-              _buildSlider('Qty'),
-              const SizedBox(
-                height: 10.0,
-              ),
-              _buildCheckBox("Recommended"),
-              _buildCheckBox("Popular"),
-              _buildCheckBox("Top Rated"),
-              MaterialButton(
-                onPressed: () {
-                  log("Save Data");
-                },
-                height: 40,
-                minWidth: double.infinity,
-                color: Colors.black,
-                child: const Text(
-                  "Save",
-                  style: TextStyle(color: Colors.white),
-                ),
-              )
-            ],
+                    const SizedBox(height: 10),
+                    const Text(
+                      "Product Information",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    _buildTextFormfield(
+                      "Product Id",
+                      "id",
+                      productController,
+                    ),
+                    _buildTextFormfield(
+                      "Product Name",
+                      "name",
+                      productController,
+                    ),
+                    _buildTextFormfield(
+                      "Product Description",
+                      "description",
+                      productController,
+                    ),
+                    _buildTextFormfield(
+                      "Product Category",
+                      "category",
+                      productController,
+                    ),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    _buildSlider(
+                      'Price',
+                      'Price',
+                      productController,
+                      productController.price,
+                    ),
+                    _buildSlider('Quantity', 'Quantity', productController,
+                        productController.quantity),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    _buildCheckBox(
+                      "Recommended",
+                      "Recommended",
+                      productController,
+                      productController.isRecommended,
+                    ),
+                    _buildCheckBox(
+                      "Popular",
+                      "Popular",
+                      productController,
+                      productController.isPopular,
+                    ),
+                    _buildCheckBox(
+                      "TopRated",
+                      "TopRated",
+                      productController,
+                      productController.isTopRated,
+                    ),
+                    MaterialButton(
+                      onPressed: () {
+                        log("Save Data");
+                        log(productController.newProduct.toString());
+                      },
+                      height: 40,
+                      minWidth: double.infinity,
+                      color: Colors.black,
+                      child: const Text(
+                        "Save",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    )
+                  ],
+                )),
           ),
         ),
       ),
@@ -87,15 +160,29 @@ class AddProducts extends StatelessWidget {
   }
 }
 
-TextFormField _buildTextFormfield(String hintText) {
+TextFormField _buildTextFormfield(
+  String hintText,
+  String name,
+  ProductController productController,
+) {
   return TextFormField(
-    decoration: InputDecoration(
-      hintText: hintText,
-    ),
+    decoration: InputDecoration(hintText: hintText),
+    onChanged: (value) {
+      productController.newProduct.update(
+        name,
+        (_) => value,
+        ifAbsent: (() => value),
+      );
+    },
   );
 }
 
-Row _buildSlider(String title) {
+Row _buildSlider(
+  String title,
+  String name,
+  ProductController productController,
+  double? controllerValue,
+) {
   return Row(
     children: [
       SizedBox(
@@ -110,20 +197,31 @@ Row _buildSlider(String title) {
       ),
       Expanded(
         child: Slider(
-          value: 0,
+          value: (controllerValue == null) ? 0 : controllerValue,
           min: 0,
           max: 200,
           divisions: 10,
           activeColor: Colors.black,
           inactiveColor: Colors.black12,
-          onChanged: (value) {},
+          onChanged: (value) {
+            productController.newProduct.update(
+              name,
+              (_) => value,
+              ifAbsent: (() => value),
+            );
+          },
         ),
       ),
     ],
   );
 }
 
-Row _buildCheckBox(String title) {
+Row _buildCheckBox(
+  String title,
+  String name,
+  ProductController productController,
+  bool? controllerValue,
+) {
   return Row(
     children: [
       SizedBox(
@@ -137,10 +235,16 @@ Row _buildCheckBox(String title) {
         ),
       ),
       Checkbox(
-        value: true,
+        value: (controllerValue == null) ? false : controllerValue,
         checkColor: Colors.black,
         activeColor: Colors.black12,
-        onChanged: (value) {},
+        onChanged: (value) {
+          productController.newProduct.update(
+            name,
+            (_) => value,
+            ifAbsent: (() => value),
+          );
+        },
       ),
     ],
   );

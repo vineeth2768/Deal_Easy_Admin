@@ -24,7 +24,7 @@ class ProductScreen extends StatelessWidget {
               height: 100,
               child: InkWell(
                 onTap: () {
-                  Get.to(() => const AddProducts());
+                  Get.to(() => AddProducts());
                 },
                 child: Card(
                   elevation: 5,

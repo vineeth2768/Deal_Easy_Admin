@@ -1,10 +1,14 @@
 import 'package:deal_easy_admin/screens/screen_add_product.dart';
 import 'package:deal_easy_admin/screens/screen_home.dart';
 import 'package:deal_easy_admin/screens/screen_products.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/get_navigation.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   runApp(const MyApp());
 }
 
@@ -23,7 +27,7 @@ class MyApp extends StatelessWidget {
       home: const HomeScreen(),
       getPages: [
         GetPage(name: '/products', page: () => ProductScreen()),
-        GetPage(name: '/products/new', page: () => const AddProducts()),
+        GetPage(name: '/products/new', page: () => AddProducts()),
       ],
     );
   }

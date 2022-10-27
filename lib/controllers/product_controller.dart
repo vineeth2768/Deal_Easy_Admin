@@ -4,6 +4,14 @@ import 'package:get/get.dart';
 class ProductController extends GetxController {
   List<Product> products = Product.products.obs;
 
+  var newProduct = {}.obs;
+
+  get price => newProduct["Price"];
+  get quantity => newProduct["Quantity"];
+  get isRecommended => newProduct["Recommended"];
+  get isPopular => newProduct["Popular"];
+  get isTopRated => newProduct["TopRated"];
+
   void updateProductPrice(
     int index,
     Product product,
