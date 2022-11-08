@@ -6,7 +6,7 @@ class ProductController extends GetxController {
 
   var newProduct = {}.obs;
 
-  get price => newProduct["Price"];
+  get price => newProduct['Price'];
   get quantity => newProduct["Quantity"];
   get isRecommended => newProduct["Recommended"];
   get isPopular => newProduct["Popular"];

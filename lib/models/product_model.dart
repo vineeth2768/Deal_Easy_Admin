@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 class Product extends Equatable {
@@ -7,12 +8,12 @@ class Product extends Equatable {
   final String name;
   final String category;
   final String description;
-  final String imageUrl;
-  final bool isRecommended;
-  final bool isPopular;
-  final bool isTopRated;
-  double price;
-  int quantity;
+  final String? imageUrl;
+  final bool? isRecommended;
+  final bool? isPopular;
+  final bool? isTopRated;
+  double? price;
+  int? quantity;
 
   Product({
     required this.id,
@@ -34,12 +35,12 @@ class Product extends Equatable {
       name,
       category,
       description,
-      imageUrl,
-      isRecommended,
-      isPopular,
-      isTopRated,
-      price,
-      quantity,
+      imageUrl!,
+      isRecommended!,
+      isPopular!,
+      isTopRated!,
+      price!,
+      quantity!,
     ];
   }
 
@@ -83,25 +84,22 @@ class Product extends Equatable {
     };
   }
 
-  factory Product.fromMap(Map<String, dynamic> map) {
+  factory Product.fromSnapshot(DocumentSnapshot snap) {
     return Product(
-      id: map['id'],
-      name: map['name'],
-      category: map['category'],
-      description: map['description'],
-      imageUrl: map['imageUrl'],
-      isRecommended: map['isRecommended'],
-      isPopular: map['isPopular'],
-      isTopRated: map['isTopRated'],
-      price: map['price'],
-      quantity: map['quantity'],
+      id: snap['id'],
+      name: snap['name'],
+      category: snap['category'],
+      description: snap['description'],
+      imageUrl: snap['imageUrl'],
+      isRecommended: snap['isRecommended'],
+      isPopular: snap['isPopular'],
+      isTopRated: snap['isTopRated'],
+      price: snap['price'],
+      quantity: snap['quantity'],
     );
   }
 
   String toJson() => json.encode(toMap());
-
-  factory Product.fromJson(String source) =>
-      Product.fromMap(json.decode(source));
 
   @override
   bool get stringify => true;

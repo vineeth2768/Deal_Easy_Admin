@@ -107,7 +107,7 @@ class ProductCard extends StatelessWidget {
                   height: 80,
                   width: 80,
                   child: Image.network(
-                    product.imageUrl,
+                    product.imageUrl!,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -126,7 +126,7 @@ class ProductCard extends StatelessWidget {
                             ),
                           ),
                           Slider(
-                            value: product.price,
+                            value: product.price!,
                             min: 0,
                             max: 400,
                             divisions: 10,
@@ -139,7 +139,7 @@ class ProductCard extends StatelessWidget {
                           ),
                           Expanded(
                             child: Text(
-                              product.price.toStringAsFixed(1),
+                              product.price!.toStringAsFixed(1),
                               style: const TextStyle(
                                   fontSize: 12, fontWeight: FontWeight.bold),
                             ),
@@ -157,7 +157,7 @@ class ProductCard extends StatelessWidget {
                             ),
                           ),
                           Slider(
-                            value: product.quantity.toDouble(),
+                            value: product.quantity!.toDouble(),
                             min: 0,
                             max: 200,
                             divisions: 10,
@@ -173,7 +173,7 @@ class ProductCard extends StatelessWidget {
                           ),
                           Expanded(
                             child: Text(
-                              '${product.quantity.toInt()}',
+                              '${product.quantity}',
                               style: const TextStyle(
                                   fontSize: 12, fontWeight: FontWeight.bold),
                             ),

@@ -3,6 +3,8 @@
 import 'dart:developer';
 
 import 'package:deal_easy_admin/controllers/product_controller.dart';
+import 'package:deal_easy_admin/models/product_model.dart';
+import 'package:deal_easy_admin/services/database_services.dart';
 import 'package:deal_easy_admin/services/storage_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,6 +17,7 @@ class AddProducts extends StatelessWidget {
   final ProductController productController = Get.find();
 
   StorageService storage = StorageService();
+  DatabaseService database = DatabaseService();
 
   @override
   Widget build(BuildContext context) {
@@ -140,6 +143,24 @@ class AddProducts extends StatelessWidget {
                     ),
                     MaterialButton(
                       onPressed: () {
+                        database.addProduct(
+                          Product(
+                            id: int.parse(productController.newProduct['id']),
+                            name: productController.newProduct['name'],
+                            category: productController.newProduct['category'],
+                            description:
+                                productController.newProduct['description'],
+                            imageUrl: productController.newProduct['imageUrl'],
+                            isRecommended:
+                                productController.newProduct['isRecommended'],
+                            isPopular:
+                                productController.newProduct['isPopular'],
+                            isTopRated:
+                                productController.newProduct['isTopRated'],
+                            price: productController.newProduct['price'],
+                            quantity: productController.newProduct['quantity'],
+                          ),
+                        );
                         log("Save Data");
                         log(productController.newProduct.toString());
                       },
