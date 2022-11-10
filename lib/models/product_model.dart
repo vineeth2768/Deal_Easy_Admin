@@ -90,7 +90,7 @@ class Product extends Equatable {
       name: snap['name'],
       category: snap['category'],
       description: snap['description'],
-      imageUrl: snap['imageUrl'],
+      imageUrl: snap['imageurl'],
       isRecommended: snap['isRecommended'],
       isPopular: snap['isPopular'],
       isTopRated: snap['isTopRated'],

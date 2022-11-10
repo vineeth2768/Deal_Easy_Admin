@@ -114,30 +114,34 @@ class AddProducts extends StatelessWidget {
                     ),
                     _buildSlider(
                       'Price',
-                      'Price',
+                      'price',
                       productController,
                       productController.price,
                     ),
-                    _buildSlider('Quantity', 'Quantity', productController,
-                        productController.quantity),
+                    _buildSlider(
+                      'Quantity',
+                      'quantity',
+                      productController,
+                      productController.quantity,
+                    ),
                     const SizedBox(
                       height: 10.0,
                     ),
                     _buildCheckBox(
                       "Recommended",
-                      "Recommended",
+                      "isRecommended",
                       productController,
                       productController.isRecommended,
                     ),
                     _buildCheckBox(
                       "Popular",
-                      "Popular",
+                      "isPopular",
                       productController,
                       productController.isPopular,
                     ),
                     _buildCheckBox(
                       "TopRated",
-                      "TopRated",
+                      "isTopRated",
                       productController,
                       productController.isTopRated,
                     ),
@@ -158,7 +162,8 @@ class AddProducts extends StatelessWidget {
                             isTopRated:
                                 productController.newProduct['isTopRated'],
                             price: productController.newProduct['price'],
-                            quantity: productController.newProduct['quantity'],
+                            quantity: productController.newProduct['quantity']
+                                .toInt(),
                           ),
                         );
                         log("Save Data");

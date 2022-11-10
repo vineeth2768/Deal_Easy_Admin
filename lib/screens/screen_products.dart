@@ -48,20 +48,20 @@ class ProductScreen extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                  itemCount: productController.products.length,
-                  itemBuilder: (context, index) {
-                    return Obx(
-                      () => SizedBox(
+              child: Obx(
+                () => ListView.builder(
+                    itemCount: productController.products.length,
+                    itemBuilder: (context, index) {
+                      return SizedBox(
                         height: 240,
                         child: ProductCard(
                           index: index,
                           product: productController.products[index],
                         ),
-                      ),
-                    );
-                  }),
-            )
+                      );
+                    }),
+              ),
+            ),
           ],
         ),
       ),
@@ -134,7 +134,14 @@ class ProductCard extends StatelessWidget {
                             inactiveColor: Colors.black12,
                             onChanged: (value) {
                               productController.updateProductPrice(
-                                  index, product, value);
+                                index,
+                                product,
+                                value,
+                              );
+                            },
+                            onChangeEnd: (value) {
+                              productController.saveNewProductPrice(
+                                  product, 'price', value);
                             },
                           ),
                           Expanded(
@@ -169,6 +176,10 @@ class ProductCard extends StatelessWidget {
                                 product,
                                 value.toInt(),
                               );
+                            },
+                            onChangeEnd: (value) {
+                              productController.saveNewProductQuantity(
+                                  product, 'quantity', value.toInt());
                             },
                           ),
                           Expanded(

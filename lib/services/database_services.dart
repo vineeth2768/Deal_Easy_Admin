@@ -3,7 +3,7 @@ import 'package:deal_easy_admin/models/product_model.dart';
 
 class DatabaseService {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
-  Stream<List<Product>> getProduct() {
+  Stream<List<Product>> getProducts() {
     return _firebaseFirestore
         .collection('products')
         .snapshots()
@@ -14,5 +14,19 @@ class DatabaseService {
 
   Future<void> addProduct(Product product) {
     return _firebaseFirestore.collection('products').add(product.toMap());
+  }
+
+  Future<void> updateField(
+    Product product,
+    String field,
+    dynamic newValue,
+  ) {
+    return _firebaseFirestore
+        .collection('products')
+        .where('id', isEqualTo: product.id)
+        .get()
+        .then((querySnapshot) => {
+              querySnapshot.docs.first.reference.update({field: newValue})
+            });
   }
 }
